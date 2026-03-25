@@ -1,0 +1,2 @@
+PS C:\Users\m> python -c "import urllib.request; req=urllib.request.Request('http://localhost:8000/djangoapp/logout/'); print(urllib.request.urlopen(req).read().decode())"
+{"userName": ""}

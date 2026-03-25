@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "city": "Wichita",
+    "state": "Kansas",
+    "st": "KS",
+    "address": "1400 S Broadway Ave",
+    "zip": "67211",
+    "lat": 37.6695,
+    "long": -97.3382,
+    "short_name": "Wichita Best Cars",
+    "full_name": "Best Cars of Wichita"
+  },
+  {
+    "id": 2,
+    "city": "Topeka",
+    "state": "Kansas",
+    "st": "KS",
+    "address": "2900 SW Fairlawn Rd",
+    "zip": "66614",
+    "lat": 39.0197,
+    "long": -95.7391,
+    "short_name": "Topeka Best Cars",
+    "full_name": "Best Cars of Topeka"
+  },
+  {
+    "id": 3,
+    "city": "Overland Park",
+    "state": "Kansas",
+    "st": "KS",
+    "address": "9701 Metcalf Ave",
+    "zip": "66212",
+    "lat": 38.9822,
+    "long": -94.6708,
+    "short_name": "OP Best Cars",
+    "full_name": "Best Cars of Overland Park"
+  },
+  {
+    "id": 4,
+    "city": "Chicago",
+    "state": "Illinois",
+    "st": "IL",
+    "address": "4747 N Broadway",
+    "zip": "60640",
+    "lat": 41.9658,
+    "long": -87.6566,
+    "short_name": "Chicago Best Cars",
+    "full_name": "Best Cars of Chicago"
+  },
+  {
+    "id": 5,
+    "city": "Los Angeles",
+    "state": "California",
+    "st": "CA",
+    "address": "6200 Wilshire Blvd",
+    "zip": "90048",
+    "lat": 34.0622,
+    "long": -118.3615,
+    "short_name": "LA Best Cars",
+    "full_name": "Best Cars of Los Angeles"
+  },
+  {
+    "id": 6,
+    "city": "Houston",
+    "state": "Texas",
+    "st": "TX",
+    "address": "5000 Katy Freeway",
+    "zip": "77007",
+    "lat": 29.7752,
+    "long": -95.4236,
+    "short_name": "Houston Best Cars",
+    "full_name": "Best Cars of Houston"
+  },
+  {
+    "id": 7,
+    "city": "Phoenix",
+    "state": "Arizona",
+    "st": "AZ",
+    "address": "2200 E Camelback Rd",
+    "zip": "85016",
+    "lat": 33.5120,
+    "long": -112.0248,
+    "short_name": "Phoenix Best Cars",
+    "full_name": "Best Cars of Phoenix"
+  },
+  {
+    "id": 8,
+    "city": "New York",
+    "state": "New York",
+    "st": "NY",
+    "address": "11 Penn Plaza",
+    "zip": "10001",
+    "lat": 40.7484,
+    "long": -73.9967,
+    "short_name": "NYC Best Cars",
+    "full_name": "Best Cars of New York"
+  },
+  {
+    "id": 9,
+    "city": "Miami",
+    "state": "Florida",
+    "st": "FL",
+    "address": "1000 Brickell Ave",
+    "zip": "33131",
+    "lat": 25.7617,
+    "long": -80.1918,
+    "short_name": "Miami Best Cars",
+    "full_name": "Best Cars of Miami"
+  },
+  {
+    "id": 10,
+    "city": "Seattle",
+    "state": "Washington",
+    "st": "WA",
+    "address": "400 Pine St",
+    "zip": "98101",
+    "lat": 47.6111,
+    "long": -122.3371,
+    "short_name": "Seattle Best Cars",
+    "full_name": "Best Cars of Seattle"
+  }
+]

@@ -1,0 +1,112 @@
+[
+  {
+    "id": 1,
+    "name": "John Smith",
+    "dealership": 1,
+    "review": "Fantastic service! The staff was very helpful and professional. I found my dream car at a great price.",
+    "purchase": true,
+    "purchase_date": "2024-01-15",
+    "car_make": "Toyota",
+    "car_model": "Camry",
+    "car_year": 2023
+  },
+  {
+    "id": 2,
+    "name": "Emily Johnson",
+    "dealership": 1,
+    "review": "Great experience overall. The salesperson was knowledgeable and not pushy at all.",
+    "purchase": true,
+    "purchase_date": "2024-02-20",
+    "car_make": "NISSAN",
+    "car_model": "Pathfinder",
+    "car_year": 2023
+  },
+  {
+    "id": 3,
+    "name": "Michael Davis",
+    "dealership": 2,
+    "review": "Excellent dealership! Very transparent pricing and the whole process was smooth.",
+    "purchase": true,
+    "purchase_date": "2024-01-28",
+    "car_make": "Audi",
+    "car_model": "A4",
+    "car_year": 2023
+  },
+  {
+    "id": 4,
+    "name": "Sarah Williams",
+    "dealership": 2,
+    "review": "Good selection of vehicles. The staff was friendly and answered all my questions.",
+    "purchase": false,
+    "purchase_date": "",
+    "car_make": "Mercedes",
+    "car_model": "C-Class",
+    "car_year": 2023
+  },
+  {
+    "id": 5,
+    "name": "Robert Brown",
+    "dealership": 3,
+    "review": "Wonderful dealership! They went above and beyond to help me find the right vehicle.",
+    "purchase": true,
+    "purchase_date": "2024-03-05",
+    "car_make": "Kia",
+    "car_model": "Sorrento",
+    "car_year": 2023
+  },
+  {
+    "id": 6,
+    "name": "Jennifer Taylor",
+    "dealership": 4,
+    "review": "Average experience. The wait time was long but the price was fair.",
+    "purchase": true,
+    "purchase_date": "2023-12-10",
+    "car_make": "Toyota",
+    "car_model": "Corolla",
+    "car_year": 2022
+  },
+  {
+    "id": 7,
+    "name": "Chris Martinez",
+    "dealership": 5,
+    "review": "Amazing service! Best car buying experience I have ever had. Highly recommend.",
+    "purchase": true,
+    "purchase_date": "2024-02-14",
+    "car_make": "NISSAN",
+    "car_model": "XTRAIL",
+    "car_year": 2023
+  },
+  {
+    "id": 8,
+    "name": "Amanda Wilson",
+    "dealership": 5,
+    "review": "Terrible experience. Very pushy salespeople and hidden fees were not disclosed upfront.",
+    "purchase": false,
+    "purchase_date": "",
+    "car_make": "Audi",
+    "car_model": "A6",
+    "car_year": 2023
+  },
+  {
+    "id": 9,
+    "name": "David Anderson",
+    "dealership": 6,
+    "review": "Good dealership. Had a pleasant experience and got a good trade-in value.",
+    "purchase": true,
+    "purchase_date": "2024-01-05",
+    "car_make": "Mercedes",
+    "car_model": "E-Class",
+    "car_year": 2023
+  },
+  {
+    "id": 10,
+    "name": "Lisa Thompson",
+    "dealership": 7,
+    "review": "Great staff and great cars. The whole process took less than two hours. Very efficient.",
+    "purchase": true,
+    "purchase_date": "2024-03-12",
+    "car_make": "Kia",
+    "car_model": "Carnival",
+    "car_year": 2023
+  }
+]

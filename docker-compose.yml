@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: bestcars_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  database:
+    build: ./database
+    container_name: bestcars_dealer_service
+    ports:
+      - "3030:3030"
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017/dealersdb
+    depends_on:
+      - mongodb
+
+  sentiment:
+    build: ./sentiment_analyzer
+    container_name: bestcars_sentiment
+    ports:
+      - "5050:5050"
+
+  django:
+    build: ./server
+    container_name: bestcars_django
+    ports:
+      - "8000:8000"
+    environment:
+      - DEALER_SERVICE_URL=http://database:3030
+      - SENTIMENT_ANALYZER_URL=http://sentiment:5050
+    depends_on:
+      - database
+      - sentiment
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+volumes:
+  mongo_data:
