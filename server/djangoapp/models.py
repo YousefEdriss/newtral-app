@@ -52,6 +52,23 @@ class ProductImage(models.Model):
         return f"{self.product.name} - Image"
 
 
+class ProductSizeInventory(models.Model):
+    SIZE_CHOICES = [
+        ('XS', 'XS'), ('S', 'S'), ('M', 'M'),
+        ('L', 'L'), ('XL', 'XL'), ('XXL', 'XXL'),
+    ]
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='size_inventory')
+    size = models.CharField(max_length=5, choices=SIZE_CHOICES)
+    quantity = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = ['product', 'size']
+        ordering = ['product', 'size']
+
+    def __str__(self):
+        return f"{self.product.name} — {self.size}: {self.quantity}"
+
+
 class Cart(models.Model):
     cart_token = models.UUIDField(default=uuid.uuid4, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)

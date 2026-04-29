@@ -2,7 +2,13 @@ import csv
 import io
 from django.contrib import admin
 from django.http import HttpResponse
-from .models import Category, Collection, Product, ProductImage, Cart, CartItem, Order, OrderItem, ContactMessage, NewsletterSubscriber
+from .models import Category, Collection, Product, ProductImage, ProductSizeInventory, Cart, CartItem, Order, OrderItem, ContactMessage, NewsletterSubscriber
+
+
+class ProductSizeInventoryInline(admin.TabularInline):
+    model = ProductSizeInventory
+    extra = 0
+    fields = ['size', 'quantity']
 
 
 class ProductImageInline(admin.TabularInline):
@@ -51,7 +57,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ['category', 'collection', 'in_stock', 'featured']
     search_fields = ['name', 'description']
     prepopulated_fields = {'slug': ('name',)}
-    inlines = [ProductImageInline]
+    inlines = [ProductSizeInventoryInline, ProductImageInline]
 
 
 @admin.register(Cart)

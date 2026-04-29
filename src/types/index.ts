@@ -19,6 +19,11 @@ export interface ProductImage {
   is_primary: boolean;
 }
 
+export interface SizeInventory {
+  size: string;
+  quantity: number;
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -33,6 +38,7 @@ export interface Product {
   featured: boolean;
   created_at: string;
   images: ProductImage[];
+  size_inventory: SizeInventory[];
   primary_image: { image_url: string; alt_text: string } | null;
   hover_image: { image_url: string; alt_text: string } | null;
   discount_percent: number | null;

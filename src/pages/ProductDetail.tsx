@@ -25,6 +25,16 @@ export default function ProductDetail() {
       .finally(() => setLoading(false));
   }, [slug]);
 
+  const getSizeQty = (size: string) => {
+    if (!product || product.size_inventory.length === 0) return null;
+    return product.size_inventory.find(s => s.size === size)?.quantity ?? null;
+  };
+
+  const isSizeAvailable = (size: string) => {
+    const qty = getSizeQty(size);
+    return qty === null || qty > 0;
+  };
+
   const handleAddToCart = async () => {
     if (!selectedSize) {
       setSizeError(true);
@@ -177,15 +187,38 @@ export default function ProductDetail() {
               <span style={{ fontSize: 12, color: '#666', cursor: 'pointer', textDecoration: 'underline' }}>Size Guide</span>
             </div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              {SIZES.map(size => (
-                <button
-                  key={size}
-                  onClick={() => { setSelectedSize(size); setSizeError(false); }}
-                  className={`size-btn${selectedSize === size ? ' active' : ''}`}
-                >
-                  {size}
-                </button>
-              ))}
+              {SIZES.map(size => {
+                const available = isSizeAvailable(size);
+                const qty = getSizeQty(size);
+                const lowStock = qty !== null && qty > 0 && qty <= 3;
+                return (
+                  <div key={size} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
+                    <button
+                      onClick={() => { if (available) { setSelectedSize(size); setSizeError(false); } }}
+                      disabled={!available}
+                      className={`size-btn${selectedSize === size ? ' active' : ''}`}
+                      style={{
+                        opacity: available ? 1 : 0.35,
+                        cursor: available ? 'pointer' : 'not-allowed',
+                        textDecoration: available ? 'none' : 'line-through',
+                        position: 'relative',
+                      }}
+                    >
+                      {size}
+                    </button>
+                    {!available && (
+                      <span style={{ fontSize: 9, color: '#999', fontFamily: 'var(--font-heading)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                        Out
+                      </span>
+                    )}
+                    {lowStock && (
+                      <span style={{ fontSize: 9, color: 'var(--red)', fontFamily: 'var(--font-heading)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                        {qty} left
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
             {sizeError && (
               <p style={{ color: 'var(--red)', fontSize: 12, marginTop: 8, fontFamily: 'var(--font-body)' }}>

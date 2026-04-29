@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Category, Collection, Product, ProductImage, Cart, CartItem, Order, OrderItem, ContactMessage
+from .models import Category, Collection, Product, ProductImage, ProductSizeInventory, Cart, CartItem, Order, OrderItem, ContactMessage
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -13,6 +13,12 @@ class CollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Collection
         fields = ['id', 'name', 'slug', 'description']
+
+
+class ProductSizeInventorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductSizeInventory
+        fields = ['size', 'quantity']
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -36,11 +42,13 @@ class ProductListSerializer(serializers.ModelSerializer):
     primary_image = serializers.SerializerMethodField()
     hover_image = serializers.SerializerMethodField()
     discount_percent = serializers.SerializerMethodField()
+    size_inventory = ProductSizeInventorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
         fields = ['id', 'name', 'slug', 'price', 'compare_price', 'category',
-                  'collection', 'in_stock', 'featured', 'primary_image', 'hover_image', 'discount_percent']
+                  'collection', 'in_stock', 'featured', 'primary_image', 'hover_image',
+                  'discount_percent', 'size_inventory']
 
     def _resolve_url(self, img):
         request = self.context.get('request')
@@ -71,13 +79,14 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     collection = CollectionSerializer(read_only=True)
     images = ProductImageSerializer(many=True, read_only=True)
+    size_inventory = ProductSizeInventorySerializer(many=True, read_only=True)
     discount_percent = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = ['id', 'name', 'slug', 'description', 'price', 'compare_price',
                   'category', 'collection', 'in_stock', 'inventory_count', 'featured',
-                  'images', 'discount_percent']
+                  'images', 'size_inventory', 'discount_percent']
 
     def get_discount_percent(self, obj):
         if obj.compare_price and obj.compare_price > obj.price:

@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.models import Token
 
-from .models import Category, Collection, Product, Cart, CartItem, Order, OrderItem, ContactMessage, NewsletterSubscriber
+from .models import Category, Collection, Product, ProductSizeInventory, Cart, CartItem, Order, OrderItem, ContactMessage, NewsletterSubscriber
 from .serializers import (
     CategorySerializer, CollectionSerializer, ProductListSerializer,
     ProductDetailSerializer, CartSerializer, CartItemSerializer,
@@ -97,7 +97,7 @@ def get_current_user(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def product_list(request):
-    products = Product.objects.select_related('category', 'collection').prefetch_related('images')
+    products = Product.objects.select_related('category', 'collection').prefetch_related('images', 'size_inventory')
 
     category_slug = request.GET.get('category')
     collection_slug = request.GET.get('collection')
@@ -124,7 +124,7 @@ def product_list(request):
 @permission_classes([AllowAny])
 def product_detail(request, slug):
     try:
-        product = Product.objects.select_related('category', 'collection').prefetch_related('images').get(slug=slug)
+        product = Product.objects.select_related('category', 'collection').prefetch_related('images', 'size_inventory').get(slug=slug)
     except Product.DoesNotExist:
         return Response({'error': 'Product not found.'}, status=404)
     serializer = ProductDetailSerializer(product, context={'request': request})
@@ -179,6 +179,10 @@ def add_to_cart(request):
 
     if not product.in_stock:
         return Response({'error': 'Product is out of stock.'}, status=400)
+
+    size_inv = ProductSizeInventory.objects.filter(product=product, size=size).first()
+    if size_inv is not None and size_inv.quantity <= 0:
+        return Response({'error': f'Size {size} is out of stock.'}, status=400)
 
     cart = get_or_create_cart(cart_token) if cart_token else Cart.objects.create()
 
