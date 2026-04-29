@@ -11,4 +11,4 @@ RUN python manage.py collectstatic --noinput || true
 
 EXPOSE 8000
 
-CMD sh -c "python manage.py migrate && python manage.py seed_data && gunicorn djangoproj.wsgi:application --bind 0.0.0.0:${PORT:-8000}"
+CMD sh -c "python manage.py migrate && gunicorn djangoproj.wsgi:application --bind 0.0.0.0:${PORT:-8000}"

@@ -1,0 +1,23 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Proxy API calls to the Django backend on Railway
+[[redirects]]
+  from = "/api/*"
+  to = "RAILWAY_BACKEND_URL/api/:splat"
+  status = 200
+  force = true
+
+# Proxy media (uploaded images) to Railway
+[[redirects]]
+  from = "/media/*"
+  to = "RAILWAY_BACKEND_URL/media/:splat"
+  status = 200
+  force = true
+
+# SPA fallback — all routes serve index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
