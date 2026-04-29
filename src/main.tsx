@@ -8,7 +8,7 @@ import './styles/globals.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/static">
       <AuthProvider>
         <CartProvider>
           <App />

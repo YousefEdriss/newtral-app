@@ -1,10 +1,24 @@
+import csv
+import io
 from django.contrib import admin
-from .models import Category, Collection, Product, ProductImage, Cart, CartItem, Order, OrderItem, ContactMessage
+from django.http import HttpResponse
+from .models import Category, Collection, Product, ProductImage, Cart, CartItem, Order, OrderItem, ContactMessage, NewsletterSubscriber
 
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
     extra = 1
+    fields = ['image', 'image_url', 'alt_text', 'is_primary', 'preview']
+    readonly_fields = ['preview']
+
+    def preview(self, obj):
+        from django.utils.html import format_html
+        if obj.image:
+            return format_html('<img src="{}" style="height:80px;object-fit:cover;border-radius:4px;">', obj.image.url)
+        if obj.image_url:
+            return format_html('<img src="{}" style="height:80px;object-fit:cover;border-radius:4px;">', obj.image_url)
+        return '-'
+    preview.short_description = 'Preview'
 
 
 class CartItemInline(admin.TabularInline):
@@ -49,10 +63,70 @@ class CartAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'first_name', 'last_name', 'email', 'total', 'status', 'created_at']
+    list_display = ['id', 'first_name', 'last_name', 'email', 'total', 'status', 'created_at', 'delete_button']
     list_filter = ['status']
     search_fields = ['email', 'first_name', 'last_name']
     inlines = [OrderItemInline]
+
+    def delete_button(self, obj):
+        from django.utils.html import format_html
+        from django.urls import reverse
+        url = reverse('admin:djangoapp_order_delete', args=[obj.pk])
+        return format_html(
+            '<a href="{}" style="color:#dc2626;font-weight:600;">Delete</a>', url
+        )
+    delete_button.short_description = ''
+
+
+@admin.register(NewsletterSubscriber)
+class NewsletterSubscriberAdmin(admin.ModelAdmin):
+    list_display = ['email', 'joined_at']
+    search_fields = ['email']
+    readonly_fields = ['joined_at']
+    actions = ['export_csv', 'export_excel']
+
+    def export_csv(self, request, queryset):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="newsletter_subscribers.csv"'
+        writer = csv.writer(response)
+        writer.writerow(['Email', 'Joined At'])
+        for sub in queryset:
+            writer.writerow([sub.email, sub.joined_at.strftime('%Y-%m-%d %H:%M:%S')])
+        return response
+    export_csv.short_description = 'Download selected as CSV'
+
+    def export_excel(self, request, queryset):
+        import openpyxl
+        from openpyxl.styles import Font, PatternFill, Alignment
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = 'Subscribers'
+
+        header_fill = PatternFill(start_color='000000', end_color='000000', fill_type='solid')
+        header_font = Font(color='FFFFFF', bold=True)
+        ws.column_dimensions['A'].width = 40
+        ws.column_dimensions['B'].width = 22
+
+        for col, heading in enumerate(['Email', 'Joined At'], start=1):
+            cell = ws.cell(row=1, column=col, value=heading)
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.alignment = Alignment(horizontal='center')
+
+        for row, sub in enumerate(queryset, start=2):
+            ws.cell(row=row, column=1, value=sub.email)
+            ws.cell(row=row, column=2, value=sub.joined_at.strftime('%Y-%m-%d %H:%M:%S'))
+
+        buffer = io.BytesIO()
+        wb.save(buffer)
+        buffer.seek(0)
+        response = HttpResponse(
+            buffer.getvalue(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename="newsletter_subscribers.xlsx"'
+        return response
+    export_excel.short_description = 'Download selected as Excel'
 
 
 @admin.register(ContactMessage)

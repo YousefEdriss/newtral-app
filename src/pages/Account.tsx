@@ -1,18 +1,30 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { getOrders } from '../services/api';
+import { getOrders, deleteOrder } from '../services/api';
 import type { Order } from '../types';
 
 export default function Account() {
   const { user, isAuthenticated, loading } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   useEffect(() => {
     if (isAuthenticated) {
       getOrders().then(res => setOrders(res.data)).catch(() => {});
     }
   }, [isAuthenticated]);
+
+  const handleDelete = async (orderId: number) => {
+    if (!window.confirm(`Delete order #${orderId}? This cannot be undone.`)) return;
+    setDeletingId(orderId);
+    try {
+      await deleteOrder(orderId);
+      setOrders(prev => prev.filter(o => o.id !== orderId));
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   if (loading) return <div style={{ padding: 80, textAlign: 'center' }}>Loading...</div>;
   if (!isAuthenticated) return <Navigate to="/login" />;
@@ -40,7 +52,7 @@ export default function Account() {
                   <p style={{ fontFamily: 'var(--font-heading)', fontSize: 14, marginBottom: 4 }}>Order #{order.id}</p>
                   <p style={{ color: '#999', fontSize: 13 }}>{new Date(order.created_at).toLocaleDateString()}</p>
                 </div>
-                <div style={{ textAlign: 'right' }}>
+                <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
                   <span style={{
                     display: 'inline-block',
                     padding: '4px 12px',
@@ -54,7 +66,25 @@ export default function Account() {
                   }}>
                     {order.status}
                   </span>
-                  <p style={{ fontWeight: 600, marginTop: 6 }}>${parseFloat(order.total).toFixed(2)}</p>
+                  <p style={{ fontWeight: 600 }}>${parseFloat(order.total).toFixed(2)}</p>
+                  <button
+                    onClick={() => handleDelete(order.id)}
+                    disabled={deletingId === order.id}
+                    style={{
+                      background: 'none',
+                      border: '1px solid #dc2626',
+                      color: '#dc2626',
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: 11,
+                      letterSpacing: '0.1em',
+                      textTransform: 'uppercase',
+                      padding: '4px 12px',
+                      cursor: 'pointer',
+                      opacity: deletingId === order.id ? 0.5 : 1,
+                    }}
+                  >
+                    {deletingId === order.id ? 'Deleting…' : 'Delete Order'}
+                  </button>
                 </div>
               </div>
 

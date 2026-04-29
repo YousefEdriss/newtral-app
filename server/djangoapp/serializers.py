@@ -16,9 +16,18 @@ class CollectionSerializer(serializers.ModelSerializer):
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = ProductImage
         fields = ['id', 'image_url', 'alt_text', 'is_primary']
+
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.image:
+            url = obj.image.url
+            return request.build_absolute_uri(url) if request else url
+        return obj.image_url
 
 
 class ProductListSerializer(serializers.ModelSerializer):
@@ -33,16 +42,23 @@ class ProductListSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'slug', 'price', 'compare_price', 'category',
                   'collection', 'in_stock', 'featured', 'primary_image', 'hover_image', 'discount_percent']
 
+    def _resolve_url(self, img):
+        request = self.context.get('request')
+        if img.image:
+            url = img.image.url
+            return request.build_absolute_uri(url) if request else url
+        return img.image_url
+
     def get_primary_image(self, obj):
         img = obj.images.filter(is_primary=True).first() or obj.images.first()
         if img:
-            return {'image_url': img.image_url, 'alt_text': img.alt_text}
+            return {'image_url': self._resolve_url(img), 'alt_text': img.alt_text}
         return None
 
     def get_hover_image(self, obj):
         imgs = list(obj.images.all())
         if len(imgs) >= 2:
-            return {'image_url': imgs[1].image_url, 'alt_text': imgs[1].alt_text}
+            return {'image_url': self._resolve_url(imgs[1]), 'alt_text': imgs[1].alt_text}
         return None
 
     def get_discount_percent(self, obj):

@@ -78,7 +78,7 @@ export default function CartPage() {
             }}>
               <div style={{ width: 100, height: 120, flexShrink: 0, background: '#f5f5f5', overflow: 'hidden' }}>
                 <img
-                  src={item.product.primary_image || 'https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=400&q=80'}
+                  src={item.product.primary_image?.image_url ?? 'https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=400&q=80'}
                   alt={item.product.name}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />

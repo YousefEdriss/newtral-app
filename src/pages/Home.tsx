@@ -8,23 +8,20 @@ import { getProducts, getCollections } from '../services/api';
 export default function Home() {
   const [featured, setFeatured] = useState<Product[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
       getProducts({ featured: true }),
       getCollections(),
-    ]).then(([prodRes, colRes]) => {
-      setFeatured(prodRes.data.slice(0, 4));
-      setCollections(colRes.data.slice(0, 3));
+      getProducts(),
+    ]).then(([featRes, colRes, allRes]) => {
+      setFeatured(featRes.data.slice(0, 4));
+      setCollections(colRes.data);
+      setAllProducts(allRes.data);
     }).finally(() => setLoading(false));
   }, []);
-
-  const collectionImages = [
-    'https://images.unsplash.com/photo-1611312449408-fcece27cdbb7?w=800&q=80',
-    'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&q=80',
-    'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80',
-  ];
 
   return (
     <div>
@@ -67,72 +64,47 @@ export default function Home() {
         )}
       </section>
 
-      {/* Collections Banner */}
-      <section style={{ background: '#000', padding: '80px 24px' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <p style={{ fontFamily: 'var(--font-heading)', fontSize: 12, letterSpacing: '0.25em', color: 'var(--red)', textTransform: 'uppercase', marginBottom: 8 }}>
-              Explore
-            </p>
-            <h2 className="section-title" style={{ color: '#fff' }}>Shop by Collection</h2>
-          </div>
-
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: 16,
-          }}>
-            {collections.map((col, i) => (
-              <Link
-                key={col.id}
-                to={`/products?collection=${col.slug}`}
-                style={{
-                  position: 'relative',
-                  aspectRatio: '4/5',
-                  overflow: 'hidden',
-                  display: 'block',
-                  textDecoration: 'none',
-                }}
-              >
-                <img
-                  src={collectionImages[i % collectionImages.length]}
-                  alt={col.name}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7, transition: 'transform 0.5s' }}
-                  onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.05)')}
-                  onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
-                />
-                <div style={{
-                  position: 'absolute',
-                  bottom: 24,
-                  left: 24,
-                  right: 24,
-                }}>
-                  <h3 style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontSize: '1.4rem',
-                    color: '#fff',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.08em',
-                    marginBottom: 12,
-                  }}>
-                    {col.name}
-                  </h3>
-                  <span style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontSize: 12,
-                    color: '#fff',
-                    letterSpacing: '0.15em',
-                    textTransform: 'uppercase',
-                    borderBottom: '1px solid rgba(255,255,255,0.5)',
-                    paddingBottom: 2,
-                  }}>
-                    Shop Now →
-                  </span>
+      {/* Collections */}
+      <section style={{ padding: '80px 24px', maxWidth: 1280, margin: '0 auto' }}>
+        {loading ? (
+          <div style={{ aspectRatio: '3/4', background: '#f0f0f0', animation: 'pulse 1.5s infinite', maxWidth: 400 }} />
+        ) : (
+          collections.map(col => {
+            const products = allProducts.filter(p => p.collection?.id === col.id);
+            if (products.length === 0) return null;
+            return (
+              <div key={col.id} style={{ marginBottom: 72 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 32 }}>
+                  <div>
+                    <p style={{ fontFamily: 'var(--font-heading)', fontSize: 12, letterSpacing: '0.25em', color: 'var(--red)', textTransform: 'uppercase', marginBottom: 8 }}>
+                      Collection
+                    </p>
+                    <h2 className="section-title">{col.name}</h2>
+                  </div>
+                  <Link
+                    to={`/products?collection=${col.slug}`}
+                    style={{
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: 12,
+                      letterSpacing: '0.15em',
+                      textTransform: 'uppercase',
+                      color: '#000',
+                      textDecoration: 'underline',
+                      textUnderlineOffset: 4,
+                    }}
+                  >
+                    View All →
+                  </Link>
                 </div>
-              </Link>
-            ))}
-          </div>
-        </div>
+                <div className="product-grid">
+                  {products.map(product => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              </div>
+            );
+          })
+        )}
       </section>
 
       {/* Brand Statement */}
@@ -165,10 +137,7 @@ export default function Home() {
       </section>
 
       <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
       `}</style>
     </div>
   );

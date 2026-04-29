@@ -59,6 +59,8 @@ export const clearCart = () => api.post('/cart/clear/');
 // Orders
 export const getOrders = () => api.get('/orders/');
 
+export const deleteOrder = (orderId: number) => api.delete(`/orders/${orderId}/delete/`);
+
 export const createOrder = (data: {
   first_name: string;
   last_name: string;
@@ -68,6 +70,9 @@ export const createOrder = (data: {
   city: string;
   notes?: string;
 }) => api.post('/orders/create/', data);
+
+// Newsletter
+export const subscribeNewsletter = (email: string) => api.post('/newsletter/', { email });
 
 // Contact
 export const submitContact = (data: { name: string; email: string; subject: string; message: string }) =>

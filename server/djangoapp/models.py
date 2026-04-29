@@ -43,7 +43,8 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image_url = models.URLField(max_length=500)
+    image = models.ImageField(upload_to='products/', blank=True, null=True)
+    image_url = models.URLField(max_length=500, blank=True)
     alt_text = models.CharField(max_length=200, blank=True)
     is_primary = models.BooleanField(default=False)
 
@@ -118,6 +119,14 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.product_name} x{self.quantity}"
+
+
+class NewsletterSubscriber(models.Model):
+    email = models.EmailField(unique=True)
+    joined_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email
 
 
 class ContactMessage(models.Model):

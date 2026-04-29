@@ -1,6 +1,27 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { subscribeNewsletter } from '../services/api';
 
 export default function Footer() {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setStatus('loading');
+    try {
+      const res = await subscribeNewsletter(email);
+      setMessage(res.data.message);
+      setStatus('success');
+      setEmail('');
+    } catch {
+      setMessage('Something went wrong. Please try again.');
+      setStatus('error');
+    }
+  };
+
   return (
     <footer style={{ background: '#000', color: '#fff', marginTop: 'auto' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '64px 24px 32px' }}>
@@ -63,40 +84,54 @@ export default function Footer() {
             <p style={{ color: '#999', fontSize: 13, lineHeight: 1.6, marginBottom: 16 }}>
               New drops, exclusive offers, and culture delivered to your inbox.
             </p>
-            <form onSubmit={e => e.preventDefault()} style={{ display: 'flex' }}>
-              <input
-                type="email"
-                placeholder="your@email.com"
-                style={{
-                  flex: 1,
-                  padding: '10px 14px',
-                  background: '#111',
-                  border: '1px solid #333',
-                  borderRight: 'none',
-                  color: '#fff',
-                  fontSize: 13,
-                  fontFamily: 'var(--font-body)',
-                  outline: 'none',
-                }}
-              />
-              <button
-                type="submit"
-                style={{
-                  padding: '10px 18px',
-                  background: 'var(--red)',
-                  color: '#fff',
-                  border: 'none',
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: 12,
-                  fontWeight: 600,
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                  cursor: 'pointer',
-                }}
-              >
-                Join
-              </button>
-            </form>
+            {status === 'success' ? (
+              <p style={{ color: '#4ade80', fontSize: 13, lineHeight: 1.6 }}>{message}</p>
+            ) : (
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ display: 'flex' }}>
+                  <input
+                    type="email"
+                    placeholder="your@email.com"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    required
+                    style={{
+                      flex: 1,
+                      padding: '10px 14px',
+                      background: '#111',
+                      border: '1px solid #333',
+                      borderRight: 'none',
+                      color: '#fff',
+                      fontSize: 13,
+                      fontFamily: 'var(--font-body)',
+                      outline: 'none',
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={status === 'loading'}
+                    style={{
+                      padding: '10px 18px',
+                      background: 'var(--red)',
+                      color: '#fff',
+                      border: 'none',
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      letterSpacing: '0.1em',
+                      textTransform: 'uppercase',
+                      cursor: status === 'loading' ? 'not-allowed' : 'pointer',
+                      opacity: status === 'loading' ? 0.7 : 1,
+                    }}
+                  >
+                    {status === 'loading' ? '...' : 'Join'}
+                  </button>
+                </div>
+                {status === 'error' && (
+                  <p style={{ color: '#f87171', fontSize: 12 }}>{message}</p>
+                )}
+              </form>
+            )}
           </div>
         </div>
 

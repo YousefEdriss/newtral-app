@@ -33,8 +33,8 @@ export interface Product {
   featured: boolean;
   created_at: string;
   images: ProductImage[];
-  primary_image: string | null;
-  hover_image: string | null;
+  primary_image: { image_url: string; alt_text: string } | null;
+  hover_image: { image_url: string; alt_text: string } | null;
   discount_percent: number | null;
 }
 

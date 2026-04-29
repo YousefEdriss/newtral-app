@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.models import Token
 
-from .models import Category, Collection, Product, Cart, CartItem, Order, OrderItem, ContactMessage
+from .models import Category, Collection, Product, Cart, CartItem, Order, OrderItem, ContactMessage, NewsletterSubscriber
 from .serializers import (
     CategorySerializer, CollectionSerializer, ProductListSerializer,
     ProductDetailSerializer, CartSerializer, CartItemSerializer,
@@ -116,7 +116,7 @@ def product_list(request):
     if in_stock == 'true':
         products = products.filter(in_stock=True)
 
-    serializer = ProductListSerializer(products, many=True)
+    serializer = ProductListSerializer(products, many=True, context={'request': request})
     return Response(serializer.data)
 
 
@@ -127,7 +127,7 @@ def product_detail(request, slug):
         product = Product.objects.select_related('category', 'collection').prefetch_related('images').get(slug=slug)
     except Product.DoesNotExist:
         return Response({'error': 'Product not found.'}, status=404)
-    serializer = ProductDetailSerializer(product)
+    serializer = ProductDetailSerializer(product, context={'request': request})
     return Response(serializer.data)
 
 
@@ -303,6 +303,31 @@ def get_orders(request):
     orders = Order.objects.filter(user=request.user).prefetch_related('items').order_by('-created_at')
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_order(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id, user=request.user)
+    except Order.DoesNotExist:
+        return Response({'error': 'Order not found.'}, status=404)
+    order.delete()
+    return Response(status=204)
+
+
+# ---------- NEWSLETTER ----------
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def newsletter_subscribe(request):
+    email = request.data.get('email', '').strip().lower()
+    if not email:
+        return Response({'error': 'Email is required.'}, status=400)
+    if NewsletterSubscriber.objects.filter(email=email).exists():
+        return Response({'message': 'You are already subscribed!'}, status=200)
+    NewsletterSubscriber.objects.create(email=email)
+    return Response({'message': 'You\'re in! We\'ll keep you posted on new drops.'}, status=201)
 
 
 # ---------- CONTACT ----------

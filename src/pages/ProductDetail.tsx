@@ -153,14 +153,9 @@ export default function ProductDetail() {
               ${parseFloat(product.price).toFixed(2)}
             </span>
             {product.compare_price && (
-              <>
-                <span style={{ fontSize: 18, color: '#999', textDecoration: 'line-through', fontFamily: 'var(--font-body)' }}>
-                  ${parseFloat(product.compare_price).toFixed(2)}
-                </span>
-                {product.discount_percent && (
-                  <span className="badge-sale">Save {product.discount_percent}%</span>
-                )}
-              </>
+              <span style={{ fontSize: 18, color: '#999', textDecoration: 'line-through', fontFamily: 'var(--font-body)' }}>
+                ${parseFloat(product.compare_price).toFixed(2)}
+              </span>
             )}
           </div>
 

@@ -24,6 +24,10 @@ urlpatterns = [
     # Orders
     path('orders/', views.get_orders, name='get_orders'),
     path('orders/create/', views.create_order, name='create_order'),
+    path('orders/<int:order_id>/delete/', views.delete_order, name='delete_order'),
+
+    # Newsletter
+    path('newsletter/', views.newsletter_subscribe, name='newsletter_subscribe'),
 
     # Contact
     path('contact/', views.submit_contact, name='contact'),

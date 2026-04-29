@@ -9,8 +9,8 @@ interface Props {
 export default function ProductCard({ product }: Props) {
   const [hovered, setHovered] = useState(false);
 
-  const primaryImg = product.primary_image || 'https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600&q=80';
-  const hoverImg = product.hover_image || primaryImg;
+  const primaryImg = product.primary_image?.image_url ?? 'https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600&q=80';
+  const hoverImg = product.hover_image?.image_url ?? primaryImg;
 
   return (
     <Link
@@ -36,9 +36,6 @@ export default function ProductCard({ product }: Props) {
           />
           {/* Badges */}
           <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {product.discount_percent && (
-              <span className="badge-sale">-{product.discount_percent}%</span>
-            )}
             {!product.in_stock && (
               <span style={{
                 background: '#333',
