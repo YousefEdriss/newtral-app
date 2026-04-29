@@ -2,17 +2,17 @@
   command = "npm run build"
   publish = "dist"
 
-# Proxy API calls to the Django backend on Railway
+# Proxy API calls to the Django backend
 [[redirects]]
   from = "/api/*"
-  to = "RAILWAY_BACKEND_URL/api/:splat"
+  to = "https://newtral-backend.onrender.com/api/:splat"
   status = 200
   force = true
 
-# Proxy media (uploaded images) to Railway
+# Proxy media (uploaded images) to backend
 [[redirects]]
   from = "/media/*"
-  to = "RAILWAY_BACKEND_URL/media/:splat"
+  to = "https://newtral-backend.onrender.com/media/:splat"
   status = 200
   force = true
 
