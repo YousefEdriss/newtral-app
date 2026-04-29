@@ -195,22 +195,10 @@ export default function ProductDetail() {
                   <div key={size} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
                     <button
                       onClick={() => { if (available) { setSelectedSize(size); setSizeError(false); } }}
-                      disabled={!available}
-                      className={`size-btn${selectedSize === size ? ' active' : ''}`}
-                      style={{
-                        opacity: available ? 1 : 0.35,
-                        cursor: available ? 'pointer' : 'not-allowed',
-                        textDecoration: available ? 'none' : 'line-through',
-                        position: 'relative',
-                      }}
+                      className={`size-btn${selectedSize === size ? ' active' : ''}${!available ? ' unavailable' : ''}`}
                     >
                       {size}
                     </button>
-                    {!available && (
-                      <span style={{ fontSize: 9, color: '#999', fontFamily: 'var(--font-heading)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-                        Out
-                      </span>
-                    )}
                     {lowStock && (
                       <span style={{ fontSize: 9, color: 'var(--red)', fontFamily: 'var(--font-heading)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                         {qty} left

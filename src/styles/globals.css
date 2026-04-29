@@ -204,6 +204,31 @@ main {
   color: var(--white);
   border-color: var(--black);
 }
+.size-btn.unavailable {
+  color: #bbb;
+  cursor: not-allowed;
+  border-color: #e0e0e0;
+  position: relative;
+  overflow: hidden;
+}
+.size-btn.unavailable::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom right,
+    transparent calc(50% - 1px),
+    var(--red) calc(50% - 1px),
+    var(--red) calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
+}
+.size-btn.unavailable:hover {
+  border-color: #e0e0e0;
+}
 
 /* Product grid */
 .product-grid {
