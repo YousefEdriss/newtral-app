@@ -33,7 +33,6 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='products')
     collection = models.ForeignKey(Collection, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
     in_stock = models.BooleanField(default=True)
-    inventory_count = models.IntegerField(default=10)
     featured = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

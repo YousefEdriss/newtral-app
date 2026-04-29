@@ -34,7 +34,6 @@ export interface Product {
   category: Category | null;
   collection: Collection | null;
   in_stock: boolean;
-  inventory_count: number;
   featured: boolean;
   created_at: string;
   images: ProductImage[];

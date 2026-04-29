@@ -285,6 +285,7 @@ def create_order(request):
         notes=data.get('notes', ''),
     )
 
+    products_to_check = set()
     for item in cart.items.all():
         OrderItem.objects.create(
             order=order,
@@ -294,6 +295,17 @@ def create_order(request):
             quantity=item.quantity,
             price=item.product.price,
         )
+        size_inv = ProductSizeInventory.objects.filter(product=item.product, size=item.size).first()
+        if size_inv:
+            size_inv.quantity = max(0, size_inv.quantity - item.quantity)
+            size_inv.save()
+            products_to_check.add(item.product)
+
+    for product in products_to_check:
+        all_zero = not product.size_inventory.filter(quantity__gt=0).exists()
+        if all_zero:
+            product.in_stock = False
+            product.save()
 
     cart.items.all().delete()
 

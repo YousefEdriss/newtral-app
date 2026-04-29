@@ -9,6 +9,11 @@ class ProductSizeInventoryInline(admin.TabularInline):
     model = ProductSizeInventory
     extra = 0
     fields = ['size', 'quantity']
+    readonly_fields = ['size']
+    can_delete = False
+
+    def has_add_permission(self, request, obj=None):
+        return False
 
 
 class ProductImageInline(admin.TabularInline):
@@ -58,6 +63,11 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ['name', 'description']
     prepopulated_fields = {'slug': ('name',)}
     inlines = [ProductSizeInventoryInline, ProductImageInline]
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        for size in ['XS', 'S', 'M', 'L', 'XL', 'XXL']:
+            ProductSizeInventory.objects.get_or_create(product=obj, size=size, defaults={'quantity': 0})
 
 
 @admin.register(Cart)
